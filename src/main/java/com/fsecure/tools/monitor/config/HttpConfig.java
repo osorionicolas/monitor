@@ -13,6 +13,6 @@ import static com.fsecure.tools.monitor.utils.Constants.CONFIG_HTTP_PREFIX;
 @Getter @Setter
 public class HttpConfig {
 
-    private Integer defaultCheckPeriodInMinutes;
+    private String defaultCheckPeriodInMillis;
     private String monitoredObjectsFilePath;
 }

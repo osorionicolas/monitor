@@ -46,7 +46,7 @@ public class UrlChecker {
             Status currentStatus = is2xx && hasContentRequirement(response.getBody()) ? OK : is2xx ? WARNING : ERROR;
             updateUrlStatus(currentStatus,
                     currentStatus.equals(OK) ? "OK" :
-                            currentStatus.equals(WARNING) ? format("Wrong Content") :
+                            currentStatus.equals(WARNING) ? format("Content does not match validator: %s", patternValidator) :
                                     format("code: %d - %s", response.getStatusCodeValue(), response.getBody()),
                     getResponseTime(response.getHeaders()));
         } catch (HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException exception) {
