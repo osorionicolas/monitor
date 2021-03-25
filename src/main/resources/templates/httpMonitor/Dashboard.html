@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" lang="en">
+<head>
+    <title>The Amazing URL Monitor</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script type="text/JavaScript">
+            function AutoRefresh( t ) {
+               setTimeout("location.reload(true);", t);
+            }
+    </script>
+    <style>
+        body { font-weight: 200; font-size: 0.8rem;}2
+        .trunc { width: 100px; text-overflow: ellipsis; max-width: 160px; overflow: hidden; white-space: nowrap; }
+        tr:hover .trunc { overflow: visible; white-space: normal;  max-width: 360px; word-wrap: break-word;}
+    </style>
+</head>
+<body onload="JavaScript:AutoRefresh(30000);">
+<div class="container">
+    <p>
+    <h3 class="text-center">The Amazing URL Monitor</h3>
+    </p>
+    <br/>
+</div>
+<div class="container">
+    <a href="javascript:location.reload(true)">Refresh</a>
+    <div id="time"> -</div>
+    <script>document.getElementById("time").textContent = "Last update: " + new Date();</script>
+    <br/>
+</div>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="text-center" scope="col"> Name</th>
+            <th class="text-center" scope="col"> Status</th>
+            <th class="text-center" scope="col"> Url</th>
+            <th class="text-center" scope="col"> ResponseTime(ms)</th>
+            <th class="text-center" scope="col"> CheckTime</th>
+            <th class="text-center" scope="col"> Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${urlsStatus.empty}">
+            <td colspan="2"> No Url status Available</td>
+        </tr>
+        <tr th:each="urlStatus : ${urlsStatus}">
+            <td th:text="${urlStatus.name}"></td>
+            <td class="text-center" th:text="${urlStatus.lastStatus}"
+                th:style="${urlStatus.lastStatus.toString() == 'OK' ? 'background-color: green;' : urlStatus.lastStatus.toString() == 'WARNING' ? 'background-color: yellow;' : 'background-color: red;'}"></td>
+            <td th:text="${urlStatus.url}"></td>
+            <td class="text-center" th:text="${urlStatus.lastResponseTime}"></td>
+            <td th:text="${urlStatus.lastCheckTime}"></td>
+            <td class="trunc" th:text="${urlStatus.description}"><p></p></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

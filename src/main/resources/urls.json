@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Wiki-Argentina",
+    "url": "https://en.wikipedia.org/wiki/Argentina",
+    "regexValidator": "Buenos Aires"
+  },
+  {
+    "name": "HC",
+    "url": "https://idp.hyrecar.com",
+    "regexValidator": "pepe"
+  },
+  {
+    "name": "Monitor Index",
+    "url": "http://localhost:8080/",
+    "regexValidator": "a content"
+  },
+  {
+    "name": "ERROROSO",
+    "url": "http://idp.hyrecar.com.ar",
+    "regexValidator": "a content"
+  }
+]
