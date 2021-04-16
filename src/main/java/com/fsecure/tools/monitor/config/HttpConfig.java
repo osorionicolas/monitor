@@ -10,7 +10,8 @@ import static com.fsecure.tools.monitor.utils.Constants.CONFIG_HTTP_PREFIX;
 
 @Configuration
 @ConfigurationProperties(prefix = CONFIG_HTTP_PREFIX)
-@Getter @Setter
+@Getter
+@Setter
 public class HttpConfig {
 
     private String defaultCheckPeriodInMillis;

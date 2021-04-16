@@ -3,7 +3,8 @@ package com.fsecure.tools.monitor.model;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UrlStatus {
 
     private String name;
@@ -13,7 +14,7 @@ public class UrlStatus {
     private String lastCheckTime;
     private String description;
 
-    public UrlStatus(String name, String url){
+    public UrlStatus(String name, String url) {
         this.name = name;
         this.url = url;
     }

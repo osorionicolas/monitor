@@ -6,7 +6,6 @@ import com.fsecure.tools.monitor.monitors.HttpMonitor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.ParseException;
 import java.util.List;
 
 import static com.fsecure.tools.monitor.TestDataBuilder.SCHEDULED_SLEEP_TIME;
@@ -31,7 +30,7 @@ public class HttpMonitorTestCase extends AbstractTestCases {
     }
 
     @Test
-    public void schedulerIsOK() throws InterruptedException, ParseException {
+    public void schedulerIsOK() throws InterruptedException {
         sleep(SCHEDULED_SLEEP_TIME);
         assertThat(monitor.urlsStatus().stream().map(status -> status.getLastStatus()).collect(toList()), is(URLS_STATUS));
     }

@@ -51,7 +51,7 @@ public class UrlChecker {
                     getResponseTime(response.getHeaders()));
         } catch (HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException exception) {
             updateUrlStatus(ERROR, exception.getResponseBodyAsString(), getResponseTime(exception.getResponseHeaders()));
-        } catch (Exception unknownException){
+        } catch (Exception unknownException) {
             updateUrlStatus(ERROR, unknownException.getMessage(), ZERO_RESPONSE_TIME);
         }
     }

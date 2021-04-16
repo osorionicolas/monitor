@@ -9,11 +9,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 @SpringBootApplication
 public class MonitorApplication {
 
-	private static final Logger logger = getLogger(MonitorApplication.class);
+    private static final Logger logger = getLogger(MonitorApplication.class);
 
-	public static void main(String[] args) {
-		logger.info("Starting MonitorApp");
-		SpringApplication.run(MonitorApplication.class, args);
-	}
+    public static void main(String[] args) {
+        logger.info("Starting MonitorApp");
+        SpringApplication.run(MonitorApplication.class, args);
+    }
 
 }

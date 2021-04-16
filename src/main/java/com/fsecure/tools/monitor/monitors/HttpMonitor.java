@@ -31,7 +31,8 @@ public class HttpMonitor {
     @PostConstruct
     public void init() throws IOException {
         this.urlCheckers = new ObjectMapper()
-                .readValue(new File(config.getMonitoredObjectsFilePath()), new TypeReference<List<Url>>() {})
+                .readValue(new File(config.getMonitoredObjectsFilePath()), new TypeReference<List<Url>>() {
+                })
                 .stream().map(url -> new UrlChecker(url, client))
                 .collect(toList());
     }
@@ -41,7 +42,7 @@ public class HttpMonitor {
         urlCheckers.stream().forEach(urlChecker -> urlChecker.checkStatus());
     }
 
-    public List<UrlStatus> urlsStatus(){
+    public List<UrlStatus> urlsStatus() {
         return urlCheckers.stream().map(url -> url.getUrlStatus()).collect(toList());
     }
 }

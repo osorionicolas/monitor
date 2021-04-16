@@ -16,9 +16,9 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 public class ResponseTimeInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
-    public ClientHttpResponse intercept( HttpRequest request, byte[] body, ClientHttpRequestExecution execution ) throws IOException {
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         Long start = nanoTime();
-        ClientHttpResponse response = execution.execute( request, body );
+        ClientHttpResponse response = execution.execute(request, body);
         Long end = nanoTime();
         response.getHeaders().set(HEADER_RESPONSE_TIME_IN_MS, Long.toString(MILLISECONDS.convert((end - start), NANOSECONDS)));
         return response;
