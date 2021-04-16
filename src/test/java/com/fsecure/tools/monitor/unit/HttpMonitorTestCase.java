@@ -20,11 +20,11 @@ import static com.fsecure.tools.monitor.TestDataBuilder.SCHEDULED_SLEEP_TIME;
 import static com.fsecure.tools.monitor.TestDataBuilder.WRONG_JSON_PATH;
 import static com.fsecure.tools.monitor.TestDataBuilder.getUrls;
 import static java.lang.Boolean.FALSE;
-import static java.lang.String.format;
 import static java.lang.Thread.sleep;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -64,7 +64,7 @@ public class HttpMonitorTestCase {
     public void initFail() {
         when(config.getMonitoredObjectsFilePath()).thenReturn(WRONG_JSON_PATH);
         Exception exception = assertThrows(IOException.class, () -> monitor.init());
-        assertThat(exception.getMessage(), is(format("%s (No such file or directory)", WRONG_JSON_PATH)));
+        assertThat(exception.getMessage(), startsWith(WRONG_JSON_PATH));
     }
 
     @Test
