@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.stream.Stream;
 
 import static com.fsecure.tools.monitor.TestDataBuilder.HTTP_ERROR_DESCRIPTION;
-import static com.fsecure.tools.monitor.TestDataBuilder.LAST_RESPONSE_TIME;
 import static com.fsecure.tools.monitor.TestDataBuilder.OK_DESCRIPTION;
 import static com.fsecure.tools.monitor.TestDataBuilder.UNKHOST_ERROR_DESCRIPTION;
 import static com.fsecure.tools.monitor.TestDataBuilder.WARNING_DESCRIPTION;
@@ -34,6 +33,7 @@ import static com.fsecure.tools.monitor.model.Status.OK;
 import static com.fsecure.tools.monitor.model.Status.WARNING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.params.provider.Arguments.of;
@@ -61,7 +61,7 @@ public class UrlCheckerTestCase {
         assertThat(urlStatus.getName(), is(url.getName()));
         assertThat(urlStatus.getLastStatus(), is(status));
         assertThat(urlStatus.getUrl(), is(url.getUrl()));
-        assertThat(urlStatus.getLastResponseTime(), is(errorDescriptionFlag ? ZERO_LONG : LAST_RESPONSE_TIME));
+        assertThat(urlStatus.getLastResponseTime(), errorDescriptionFlag ? is( ZERO_LONG) : greaterThan(ZERO_LONG));
         assertThat(urlStatus.getLastCheckTime(), notNullValue());
         assertThat(urlStatus.getDescription(), containsString(statusDescription));
     }

@@ -39,10 +39,10 @@ public class HttpMonitor {
 
     @Scheduled(fixedDelayString = "${monitor.http.defaultCheckPeriodInMillis}")
     public void monitorUrls() {
-        urlCheckers.stream().forEach(urlChecker -> urlChecker.checkStatus());
+        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(() -> urlChecker.checkStatus()).start());
     }
 
     public List<UrlStatus> urlsStatus() {
-        return urlCheckers.stream().map(url -> url.getUrlStatus()).collect(toList());
+        return urlCheckers.parallelStream().map(url -> url.getUrlStatus()).collect(toList());
     }
 }

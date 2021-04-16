@@ -16,10 +16,12 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
+import static com.fsecure.tools.monitor.TestDataBuilder.SCHEDULED_SLEEP_TIME;
 import static com.fsecure.tools.monitor.TestDataBuilder.WRONG_JSON_PATH;
 import static com.fsecure.tools.monitor.TestDataBuilder.getUrls;
 import static java.lang.Boolean.FALSE;
 import static java.lang.String.format;
+import static java.lang.Thread.sleep;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -66,9 +68,10 @@ public class HttpMonitorTestCase {
     }
 
     @Test
-    public void monitorUrls() throws IOException {
+    public void monitorUrls() throws IOException, InterruptedException {
         monitor.init();
         monitor.monitorUrls();
+        sleep(SCHEDULED_SLEEP_TIME);
         assertTrue(monitor.urlsStatus().stream().map(status -> status.getLastCheckTime().isEmpty()).allMatch(bol -> bol.equals(FALSE)));
     }
 }

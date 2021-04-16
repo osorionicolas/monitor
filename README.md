@@ -6,6 +6,13 @@
 - Java 1.8 +
 - Maven 3.6.x
 
+### Run Tests (Unix/macOS)
+- Open a terminal and go to root project folder (`monitor`)
+- Execute
+```
+mvn clean test
+```
+
 ### Run Monitor (Unix/macOS)
 - Open a terminal and go to root project folder (`monitor`)
 - Execute
