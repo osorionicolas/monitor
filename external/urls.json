@@ -1,0 +1,27 @@
+[
+  {
+    "name": "WikiArgentina",
+    "url": "https://en.wikipedia.org/wiki/Argentina",
+    "regexValidator": "Buenos Aires"
+  },
+  {
+    "name": "WikiFinland",
+    "url": "https://en.wikipedia.org/wiki/Finland",
+    "regexValidator": "(Arg\\w music | tango)"
+  },
+  {
+    "name": "F-Secure",
+    "url": "https://en.wikipedia.org/wiki/F-Secure",
+    "regexValidator": "Ezequiel is hired"
+  },
+  {
+    "name": "NotFound",
+    "url": "http://localhost:8080/fake_page",
+    "regexValidator": "content"
+  },
+  {
+    "name": "UnknownHost",
+    "url": "https://google.com.fake",
+    "regexValidator": "content to verify"
+  }
+]

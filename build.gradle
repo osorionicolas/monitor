@@ -1,0 +1,48 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id "com.palantir.docker" version "0.22.1"
+}
+
+group = 'com.fsecure.tools'
+version = '0.0.1'
+description = 'monitor'
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+jar {
+    archivesBaseName="${project.name}"
+    project.version=""
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mock-server:mockserver-netty:5.11.2'
+    testImplementation 'org.mock-server:mockserver-client-java:5.11.2'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+docker {
+    name "hub.docker.com/secretcolossus/${project.name}:${project.version}"
+}
