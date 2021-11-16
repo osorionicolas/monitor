@@ -3,8 +3,8 @@
 ## Quick-start
 
 ### Requirements
-- Java 1.8 +
-- Maven 3.6.x
+- Java 11 +
+- Gradle 7.3
 
 ### Run Tests (Unix/macOS)
 - Open a terminal and go to root project folder (`monitor`)
