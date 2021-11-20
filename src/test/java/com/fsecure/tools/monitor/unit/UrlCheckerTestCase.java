@@ -8,6 +8,7 @@ import com.fsecure.tools.monitor.monitors.UrlChecker;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,8 +43,9 @@ import static org.mockito.Mockito.when;
 
 public class UrlCheckerTestCase {
 
-    private HttpClient httpClient = mock(HttpClient.class);
-    private RestTemplate restTemplate = mock(RestTemplate.class);
+    private final HttpClient httpClient = mock(HttpClient.class);
+    private final RestTemplate restTemplate = mock(RestTemplate.class);
+    private final RabbitTemplate rabbitTemplate = mock(RabbitTemplate.class);
 
     @ParameterizedTest
     @MethodSource("checkStatusTestArgs")
@@ -56,12 +58,12 @@ public class UrlCheckerTestCase {
         } else {
             when(restTemplate.getForEntity(url.getUrl(), String.class)).thenReturn(response);
         }
-        urlChecker.checkStatus();
+        urlChecker.checkStatus(rabbitTemplate);
         UrlStatus urlStatus = urlChecker.getUrlStatus();
         assertThat(urlStatus.getName(), is(url.getName()));
         assertThat(urlStatus.getLastStatus(), is(status));
         assertThat(urlStatus.getUrl(), is(url.getUrl()));
-        assertThat(urlStatus.getLastResponseTime(), errorDescriptionFlag ? is( ZERO_LONG) : greaterThan(ZERO_LONG));
+        assertThat(urlStatus.getLastResponseTime(), errorDescriptionFlag ? is(ZERO_LONG) : greaterThan(ZERO_LONG));
         assertThat(urlStatus.getLastCheckTime(), notNullValue());
         assertThat(urlStatus.getDescription(), containsString(statusDescription));
     }

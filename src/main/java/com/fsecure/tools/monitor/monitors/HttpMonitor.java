@@ -6,6 +6,8 @@ import com.fsecure.tools.monitor.client.HttpClient;
 import com.fsecure.tools.monitor.config.HttpConfig;
 import com.fsecure.tools.monitor.model.Url;
 import com.fsecure.tools.monitor.model.UrlStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,12 +22,12 @@ import static java.util.stream.Collectors.toList;
 
 @Configuration
 @EnableScheduling
+@RequiredArgsConstructor
 public class HttpMonitor {
 
-    @Autowired
-    private HttpConfig config;
-    @Autowired
-    private HttpClient client;
+    private final HttpConfig config;
+    private final HttpClient client;
+    private final RabbitTemplate rabbitTemplate;
     private List<UrlChecker> urlCheckers;
 
     @PostConstruct
@@ -39,10 +41,10 @@ public class HttpMonitor {
 
     @Scheduled(fixedDelayString = "${monitor.http.defaultCheckPeriodInMillis}")
     public void monitorUrls() {
-        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(() -> urlChecker.checkStatus()).start());
+        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(() -> urlChecker.checkStatus(rabbitTemplate)).start());
     }
 
     public List<UrlStatus> urlsStatus() {
-        return urlCheckers.parallelStream().map(url -> url.getUrlStatus()).collect(toList());
+        return urlCheckers.parallelStream().map(UrlChecker::getUrlStatus).collect(toList());
     }
 }

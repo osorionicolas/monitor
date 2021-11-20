@@ -1,6 +1,7 @@
 package com.fsecure.tools.monitor.controller;
 
 import com.fsecure.tools.monitor.service.HttpMonitorService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Controller
-@RequestMapping(HTTP_MONITOR_PATH)
+@RequestMapping({"/", HTTP_MONITOR_PATH})
+@RequiredArgsConstructor
 public class HttpMonitorController {
 
+    private final HttpMonitorService service;
     private static final Logger logger = getLogger(HttpMonitorController.class);
-
-    @Autowired
-    private HttpMonitorService service;
 
     @GetMapping
     public String status(Model model) {

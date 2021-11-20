@@ -2,18 +2,13 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id "com.palantir.docker" version "0.22.1"
+    id 'com.bmuschko.docker-spring-boot-application' version '7.1.0'
 }
 
 group = 'com.fsecure.tools'
 version = '0.0.1'
 description = 'monitor'
 java.sourceCompatibility = JavaVersion.VERSION_11
-
-jar {
-    archivesBaseName="${project.name}"
-    project.version=""
-}
 
 configurations {
     compileOnly {
@@ -27,6 +22,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'com.google.guava:guava:31.0.1-jre'
@@ -44,5 +40,10 @@ tasks.withType(JavaCompile) {
 }
 
 docker {
-    name "hub.docker.com/secretcolossus/${project.name}:${project.version}"
+    springBootApplication {
+        baseImage = 'openjdk:11-jre-slim'
+        ports = [8080]
+        images = ["secretcolossus/${project.name}:${project.version}", "secretcolossus/${project.name}:latest"]
+        jvmArgs = ['-Dspring.profiles.active=production', '-Xmx2048m']
+    }
 }
