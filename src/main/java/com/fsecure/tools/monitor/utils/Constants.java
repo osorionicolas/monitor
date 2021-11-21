@@ -3,6 +3,7 @@ package com.fsecure.tools.monitor.utils;
 public class Constants {
 
     public static final String CONFIG_HTTP_PREFIX = "monitor.http";
+    public static final String CONFIG_AMQP_PREFIX = "rabbitmq";
     public static final String HTTP_MONITOR_PATH = "/http-monitor";
     public static final String HTTP_MONITOR_DASHBOARD = "httpMonitor/Dashboard";
     public static final Long ZERO_RESPONSE_TIME = 0L;
