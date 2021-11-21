@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fsecure.tools.monitor.client.HttpClient;
 import com.fsecure.tools.monitor.config.HttpConfig;
+import com.fsecure.tools.monitor.model.MailBean;
 import com.fsecure.tools.monitor.model.Url;
 import com.fsecure.tools.monitor.model.UrlStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +32,15 @@ public class HttpMonitor {
     private final RabbitTemplate rabbitTemplate;
     private List<UrlChecker> urlCheckers;
 
+    @Value("${rabbitmq.exchange}")
+    private String rmqExchange;
+
+    @Value("${rabbitmq.key}")
+    private String rmqKey;
+
+    @Value("${mail.destination.address}")
+    private String destAddrs;
+
     @PostConstruct
     public void init() throws IOException {
         this.urlCheckers = new ObjectMapper()
@@ -41,7 +52,7 @@ public class HttpMonitor {
 
     @Scheduled(fixedDelayString = "${monitor.http.defaultCheckPeriodInMillis}")
     public void monitorUrls() {
-        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(() -> urlChecker.checkStatus(rabbitTemplate)).start());
+        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(() -> urlChecker.checkStatus(rabbitTemplate, rmqExchange, rmqKey, destAddrs)).start());
     }
 
     public List<UrlStatus> urlsStatus() {

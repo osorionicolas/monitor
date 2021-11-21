@@ -1,10 +1,13 @@
 package com.fsecure.tools.monitor.monitors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fsecure.tools.monitor.client.HttpClient;
 import com.fsecure.tools.monitor.model.MailBean;
 import com.fsecure.tools.monitor.model.Status;
 import com.fsecure.tools.monitor.model.Url;
 import com.fsecure.tools.monitor.model.UrlStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +29,7 @@ import static java.lang.String.format;
 import static java.util.Calendar.getInstance;
 import static org.slf4j.LoggerFactory.getLogger;
 
-
+@Slf4j
 public class UrlChecker {
 
     private static final Logger logger = getLogger(UrlChecker.class);
@@ -35,22 +38,13 @@ public class UrlChecker {
     private final String patternValidator;
     private final UrlStatus urlStatus;
 
-    @Value("${rabbitmq.exchange}")
-    private String rmqExchange;
-
-    @Value("${rabbitmq.key}")
-    private String rmqKey;
-
-    @Value("${mail.destination.address}")
-    private String destAddrs;
-
     public UrlChecker(Url url, HttpClient client) {
         this.patternValidator = url.getRegexValidator();
         this.urlStatus = new UrlStatus(url.getName(), url.getUrl());
         this.client = client;
     }
 
-    public void checkStatus(RabbitTemplate rabbitTemplate) {
+    public void checkStatus(RabbitTemplate rabbitTemplate, String rmqExchange, String rmqKey, String destAddrs) {
         try {
             logger.debug("Check status for {} with url: {}", urlStatus.getName(), urlStatus.getUrl());
             ResponseEntity<String> response = client.getConnection().getForEntity(urlStatus.getUrl(), String.class);
@@ -62,10 +56,24 @@ public class UrlChecker {
                                     format("code: %d - %s", response.getStatusCodeValue(), response.getBody()),
                     getResponseTime(response.getHeaders()));
         } catch (HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException exception) {
-            rabbitTemplate.convertAndSend(rmqExchange, rmqKey, new MailBean("Monitor: HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException", exception.getResponseBodyAsString(), destAddrs));
+            MailBean mail = new MailBean("Monitor: HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException", exception.getResponseBodyAsString(), destAddrs);
+            //Change this
+            try {
+                rabbitTemplate.convertAndSend(rmqExchange, rmqKey, new ObjectMapper().writeValueAsString(mail));
+            }
+            catch(JsonProcessingException e){
+                log.error("RabbitMQ message couldn't be sent");
+            }
             updateUrlStatus(ERROR, exception.getResponseBodyAsString(), getResponseTime(exception.getResponseHeaders()));
         } catch (Exception unknownException) {
-            rabbitTemplate.convertAndSend(rmqExchange, rmqKey, new MailBean("Monitor: unknownException", unknownException.getMessage(), destAddrs));
+            MailBean mail = new MailBean("Monitor: unknownException", unknownException.getMessage(), destAddrs);
+            //Change this
+            try {
+                rabbitTemplate.convertAndSend(rmqExchange, rmqKey, new ObjectMapper().writeValueAsString(mail));
+            }
+            catch(JsonProcessingException e){
+                log.error("RabbitMQ message couldn't be sent");
+            }
             updateUrlStatus(ERROR, unknownException.getMessage(), ZERO_RESPONSE_TIME);
         }
     }

@@ -58,7 +58,7 @@ public class UrlCheckerTestCase {
         } else {
             when(restTemplate.getForEntity(url.getUrl(), String.class)).thenReturn(response);
         }
-        urlChecker.checkStatus(rabbitTemplate);
+        urlChecker.checkStatus(rabbitTemplate, "", "", "");
         UrlStatus urlStatus = urlChecker.getUrlStatus();
         assertThat(urlStatus.getName(), is(url.getName()));
         assertThat(urlStatus.getLastStatus(), is(status));

@@ -3,11 +3,9 @@ package com.fsecure.tools.monitor.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.io.Serializable;
-
 @Getter
 @AllArgsConstructor
-public class MailBean implements Serializable {
+public class MailBean {
     //Asunto del email
     private String subject;
 
