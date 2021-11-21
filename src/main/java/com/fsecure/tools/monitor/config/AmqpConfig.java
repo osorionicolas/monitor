@@ -15,5 +15,5 @@ public class AmqpConfig {
 
     private String exchange;
     private String key;
-    //private String destinationAddrs;
+    private String destinationAddrs;
 }

@@ -1,6 +1,7 @@
 package com.fsecure.tools.monitor.unit;
 
 import com.fsecure.tools.monitor.client.HttpClient;
+import com.fsecure.tools.monitor.config.AmqpConfig;
 import com.fsecure.tools.monitor.model.Status;
 import com.fsecure.tools.monitor.model.Url;
 import com.fsecure.tools.monitor.model.UrlStatus;
@@ -8,6 +9,7 @@ import com.fsecure.tools.monitor.monitors.UrlChecker;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -38,14 +40,14 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.params.provider.Arguments.of;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UrlCheckerTestCase {
 
-    private final HttpClient httpClient = mock(HttpClient.class);
-    private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final RabbitTemplate rabbitTemplate = mock(RabbitTemplate.class);
+    @Mock private AmqpConfig amqpConfig;
+    @Mock private HttpClient httpClient;
+    @Mock private RestTemplate restTemplate;
+    @Mock private RabbitTemplate rabbitTemplate;
 
     @ParameterizedTest
     @MethodSource("checkStatusTestArgs")
@@ -58,7 +60,7 @@ public class UrlCheckerTestCase {
         } else {
             when(restTemplate.getForEntity(url.getUrl(), String.class)).thenReturn(response);
         }
-        urlChecker.checkStatus(rabbitTemplate, "", "", "");
+        urlChecker.checkStatus(rabbitTemplate, amqpConfig);
         UrlStatus urlStatus = urlChecker.getUrlStatus();
         assertThat(urlStatus.getName(), is(url.getName()));
         assertThat(urlStatus.getLastStatus(), is(status));

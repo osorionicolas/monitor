@@ -56,8 +56,8 @@ public class HttpMonitorTestCase {
         List<UrlStatus> urlStatusesFromMonitor = monitor.urlsStatus();
         List<Url> urlStatusesFromDataBuilder = getUrls();
         assertThat(urlStatusesFromMonitor.size(), is(urlStatusesFromDataBuilder.size()));
-        assertThat(urlStatusesFromMonitor.stream().map(url -> url.getName()).collect(toList()),
-                is(urlStatusesFromDataBuilder.stream().map(url -> url.getName()).collect(toList())));
+        assertThat(urlStatusesFromMonitor.stream().map(UrlStatus::getName).collect(toList()),
+                is(urlStatusesFromDataBuilder.stream().map(Url::getName).collect(toList())));
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.fsecure.tools.monitor.unit;
 
-
 import com.fsecure.tools.monitor.client.ResponseTimeInterceptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;

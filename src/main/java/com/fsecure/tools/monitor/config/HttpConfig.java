@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import static com.fsecure.tools.monitor.utils.Constants.CONFIG_HTTP_PREFIX;
 
-
 @Configuration
 @ConfigurationProperties(prefix = CONFIG_HTTP_PREFIX)
 @Getter
