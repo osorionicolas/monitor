@@ -37,14 +37,18 @@ public class UrlChecker {
     private final HttpClient client;
     private final String patternValidator;
     private final UrlStatus urlStatus;
+    private final RabbitTemplate rabbitTemplate;
+    private final AmqpConfig amqpConfig;
 
-    public UrlChecker(Url url, HttpClient client) {
+    public UrlChecker(Url url, HttpClient client, RabbitTemplate rabbitTemplate, AmqpConfig amqpConfig) {
         this.patternValidator = url.getRegexValidator();
         this.urlStatus = new UrlStatus(url.getName(), url.getUrl());
         this.client = client;
+        this.rabbitTemplate = rabbitTemplate;
+        this.amqpConfig = amqpConfig;
     }
 
-    public void checkStatus(RabbitTemplate rabbitTemplate, AmqpConfig amqpConfig) {
+    public void checkStatus() {
         try {
             logger.debug("Check status for {} with url: {}", urlStatus.getName(), urlStatus.getUrl());
             ResponseEntity<String> response = client.getConnection().getForEntity(urlStatus.getUrl(), String.class);
@@ -57,24 +61,21 @@ public class UrlChecker {
                     getResponseTime(response.getHeaders()));
         } catch (HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException exception) {
             MailBean mail = new MailBean("Monitor: HttpClientErrorException | HttpServerErrorException | UnknownHttpStatusCodeException", exception.getResponseBodyAsString(), amqpConfig.getDestinationAddrs());
-            //Change this
-            try {
-                rabbitTemplate.convertAndSend(amqpConfig.getExchange(), amqpConfig.getKey(), new ObjectMapper().writeValueAsString(mail));
-            }
-            catch(JsonProcessingException e){
-                log.error("RabbitMQ message couldn't be sent");
-            }
+            this.sendAmqpMessage(mail);
             updateUrlStatus(ERROR, exception.getResponseBodyAsString(), getResponseTime(exception.getResponseHeaders()));
         } catch (Exception unknownException) {
             MailBean mail = new MailBean("Monitor: unknownException", unknownException.getMessage(), amqpConfig.getDestinationAddrs());
-            //Change this
-            try {
-                rabbitTemplate.convertAndSend(amqpConfig.getExchange(), amqpConfig.getKey(), new ObjectMapper().writeValueAsString(mail));
-            }
-            catch(JsonProcessingException e){
-                log.error("RabbitMQ message couldn't be sent");
-            }
+            this.sendAmqpMessage(mail);
             updateUrlStatus(ERROR, unknownException.getMessage(), ZERO_RESPONSE_TIME);
+        }
+    }
+
+    private void sendAmqpMessage(MailBean mail){
+        try {
+            rabbitTemplate.convertAndSend(amqpConfig.getExchange(), amqpConfig.getKey(), new ObjectMapper().writeValueAsString(mail));
+        }
+        catch(JsonProcessingException e){
+            log.error("RabbitMQ message couldn't be sent");
         }
     }
 

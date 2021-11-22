@@ -52,7 +52,7 @@ public class UrlCheckerTestCase {
     @ParameterizedTest
     @MethodSource("checkStatusTestArgs")
     public void checkStatus(Url url, ResponseEntity<String> response, Status status, String statusDescription) {
-        UrlChecker urlChecker = new UrlChecker(url, httpClient);
+        UrlChecker urlChecker = new UrlChecker(url, httpClient, rabbitTemplate, amqpConfig);
         Boolean errorDescriptionFlag = statusDescription.equals(UNKHOST_ERROR_DESCRIPTION);
         when(httpClient.getConnection()).thenReturn(restTemplate);
         if (errorDescriptionFlag) {
@@ -60,7 +60,7 @@ public class UrlCheckerTestCase {
         } else {
             when(restTemplate.getForEntity(url.getUrl(), String.class)).thenReturn(response);
         }
-        urlChecker.checkStatus(rabbitTemplate, amqpConfig);
+        urlChecker.checkStatus();
         UrlStatus urlStatus = urlChecker.getUrlStatus();
         assertThat(urlStatus.getName(), is(url.getName()));
         assertThat(urlStatus.getLastStatus(), is(status));

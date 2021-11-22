@@ -36,13 +36,13 @@ public class HttpMonitor {
         this.urlCheckers = new ObjectMapper()
                 .readValue(new File(httpConfig.getMonitoredObjectsFilePath()), new TypeReference<List<Url>>() {
                 })
-                .stream().map(url -> new UrlChecker(url, client))
+                .stream().map(url -> new UrlChecker(url, client, rabbitTemplate, amqpConfig))
                 .collect(toList());
     }
 
     @Scheduled(fixedDelayString = "${monitor.http.defaultCheckPeriodInMillis}")
-    public void monitorUrls() {
-        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(() -> urlChecker.checkStatus(rabbitTemplate, amqpConfig)).start());
+    public void monitorUrls()  {
+        urlCheckers.parallelStream().forEach(urlChecker -> new Thread(urlChecker::checkStatus).start());
     }
 
     public List<UrlStatus> urlsStatus() {
