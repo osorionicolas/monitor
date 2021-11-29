@@ -31,8 +31,8 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.mock-server:mockserver-netty:5.11.2'
-    testImplementation 'org.mock-server:mockserver-client-java:5.11.2'
+    testImplementation 'org.mock-server:mockserver-netty:3.10.8'
+    testImplementation 'org.mock-server:mockserver-client-java:3.10.8'
 }
 
 tasks.withType(JavaCompile) {
@@ -46,4 +46,8 @@ docker {
         images = ["secretcolossus/${project.name}:${project.version}", "secretcolossus/${project.name}:latest"]
         jvmArgs = ['-Dspring.profiles.active=production', '-Xmx2048m']
     }
+}
+
+test {
+    useJUnitPlatform()
 }

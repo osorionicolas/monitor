@@ -10,14 +10,14 @@
 - Open a terminal and go to root project folder (`monitor`)
 - Execute
 ```
-mvn clean test
+gradlew test
 ```
 
 ### Run Monitor (Unix/macOS)
 - Open a terminal and go to root project folder (`monitor`)
 - Execute
 ```
-mvn spring-boot:run
+gradlew bootRun
 ```
 - On a browser go to `http://localhost:8080/http-monitor`
     - Monitoring page refresh automatically each 30secs. 

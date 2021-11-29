@@ -16,38 +16,22 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.stream.Stream;
 
-import static com.fsecure.tools.monitor.TestDataBuilder.HTTP_ERROR_DESCRIPTION;
-import static com.fsecure.tools.monitor.TestDataBuilder.OK_DESCRIPTION;
-import static com.fsecure.tools.monitor.TestDataBuilder.UNKHOST_ERROR_DESCRIPTION;
-import static com.fsecure.tools.monitor.TestDataBuilder.WARNING_DESCRIPTION;
-import static com.fsecure.tools.monitor.TestDataBuilder.ZERO_LONG;
-import static com.fsecure.tools.monitor.TestDataBuilder.getErrorUrl404;
-import static com.fsecure.tools.monitor.TestDataBuilder.getErrorUrlUnkHost;
-import static com.fsecure.tools.monitor.TestDataBuilder.getOkUrlWithRegexValidator;
-import static com.fsecure.tools.monitor.TestDataBuilder.getOkUrlWithStringValidator;
-import static com.fsecure.tools.monitor.TestDataBuilder.getResponseErrorUrl404;
-import static com.fsecure.tools.monitor.TestDataBuilder.getResponseErrorUrlUnkHost;
-import static com.fsecure.tools.monitor.TestDataBuilder.getResponseOkUrlWithRegexValidator;
-import static com.fsecure.tools.monitor.TestDataBuilder.getResponseOkUrlWithStringValidator;
-import static com.fsecure.tools.monitor.TestDataBuilder.getResponseWarningUrl;
-import static com.fsecure.tools.monitor.TestDataBuilder.getWarningUrl;
+import static com.fsecure.tools.monitor.TestDataBuilder.*;
 import static com.fsecure.tools.monitor.model.Status.ERROR;
 import static com.fsecure.tools.monitor.model.Status.OK;
 import static com.fsecure.tools.monitor.model.Status.WARNING;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 public class UrlCheckerTestCase {
 
-    @Mock private AmqpConfig amqpConfig;
-    @Mock private HttpClient httpClient;
-    @Mock private RestTemplate restTemplate;
-    @Mock private RabbitTemplate rabbitTemplate;
+    private HttpClient httpClient = mock(HttpClient.class);
+    private AmqpConfig amqpConfig = mock(AmqpConfig.class);
+    private RestTemplate restTemplate = mock(RestTemplate.class);
+    private RabbitTemplate rabbitTemplate = mock(RabbitTemplate.class);
 
     @ParameterizedTest
     @MethodSource("checkStatusTestArgs")
@@ -55,6 +39,7 @@ public class UrlCheckerTestCase {
         UrlChecker urlChecker = new UrlChecker(url, httpClient, rabbitTemplate, amqpConfig);
         Boolean errorDescriptionFlag = statusDescription.equals(UNKHOST_ERROR_DESCRIPTION);
         when(httpClient.getConnection()).thenReturn(restTemplate);
+
         if (errorDescriptionFlag) {
             when(restTemplate.getForEntity(url.getUrl(), String.class)).thenThrow(new RuntimeException(statusDescription));
         } else {

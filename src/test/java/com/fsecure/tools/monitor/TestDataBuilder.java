@@ -39,6 +39,9 @@ public class TestDataBuilder {
     public static final String WARNING_DESCRIPTION = "Content does not match validator:";
     public static final String HTTP_ERROR_DESCRIPTION = "Not Found";
     public static final String UNKHOST_ERROR_DESCRIPTION = "I/O error on GET";
+    public static final String AMQP_EXCHANGE = "mail-exchange";
+    public static final String AMQP_KEY = "mail.received";
+    public static final String AMQP_DEST_ADDRS = "test@test.com";
 
     public static final String urlsJsonFilePath() {
         return TestDataBuilder.class.getClassLoader().getResource("urls.json").getPath();

@@ -2,6 +2,7 @@ package com.fsecure.tools.monitor.unit;
 
 import com.fsecure.tools.monitor.TestDataBuilder;
 import com.fsecure.tools.monitor.client.HttpClient;
+import com.fsecure.tools.monitor.config.AmqpConfig;
 import com.fsecure.tools.monitor.config.HttpConfig;
 import com.fsecure.tools.monitor.model.Url;
 import com.fsecure.tools.monitor.model.UrlStatus;
@@ -10,15 +11,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
-import static com.fsecure.tools.monitor.TestDataBuilder.SCHEDULED_SLEEP_TIME;
-import static com.fsecure.tools.monitor.TestDataBuilder.WRONG_JSON_PATH;
-import static com.fsecure.tools.monitor.TestDataBuilder.getUrls;
+import static com.fsecure.tools.monitor.TestDataBuilder.*;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Thread.sleep;
 import static java.util.stream.Collectors.toList;
@@ -38,6 +38,12 @@ public class HttpMonitorTestCase {
 
     @Mock
     private HttpClient client;
+
+    @Mock
+    private AmqpConfig amqpConfig;
+
+    @Mock
+    private RabbitTemplate rabbitTemplate;
 
     @InjectMocks
     @Resource
@@ -69,6 +75,9 @@ public class HttpMonitorTestCase {
 
     @Test
     public void monitorUrls() throws IOException, InterruptedException {
+        when(amqpConfig.getExchange()).thenReturn(AMQP_EXCHANGE);
+        when(amqpConfig.getKey()).thenReturn(AMQP_KEY);
+        when(amqpConfig.getDestinationAddrs()).thenReturn(AMQP_DEST_ADDRS);
         monitor.init();
         monitor.monitorUrls();
         sleep(SCHEDULED_SLEEP_TIME);
